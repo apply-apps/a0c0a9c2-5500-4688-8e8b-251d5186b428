@@ -2,24 +2,22 @@
 // Combined code from all files
 
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView, StyleSheet, Text, ScrollView,
-  ActivityIndicator, View, Image
-} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, ScrollView, View, Image, ActivityIndicator, Dimensions } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+
+const API_URL = 'http://apihub.p.appply.xyz:3300/chatgpt';
+
+const workouts = [
+  { id: '1', name: 'Push Ups', imageWidth: 200, imageHeight: 200 },
+  { id: '2', name: 'Squats', imageWidth: 200, imageHeight: 200 },
+  { id: '3', name: 'Lunges', imageWidth: 200, imageHeight: 200 },
+  { id: '4', name: 'Planks', imageWidth: 200, imageHeight: 200 },
+  { id: '5', name: 'Bench Press', imageWidth: 200, imageHeight: 200 },
+  { id: '6', name: 'Chest Fly', imageWidth: 200, imageHeight: 200 },
+  { id: '7', name: 'Incline Dumbbell Press', imageWidth: 200, imageHeight: 200 },
+];
 
 const WorkoutList = () => {
-  const API_URL = 'http://apihub.p.appply.xyz:3300/chatgpt';
-
-  const workouts = [
-    { id: '1', name: 'Push Ups', imageWidth: 200, imageHeight: 200 },
-    { id: '2', name: 'Squats', imageWidth: 200, imageHeight: 200 },
-    { id: '3', name: 'Lunges', imageWidth: 200, imageHeight: 200 },
-    { id: '4', name: 'Planks', imageWidth: 200, imageHeight: 200 },
-    { id: '5', name: 'Bench Press', imageWidth: 200, imageHeight: 200 },
-    { id: '6', name: 'Chest Fly', imageWidth: 200, imageHeight: 200 },
-    { id: '7', name: 'Incline Dumbbell Press', imageWidth: 200, imageHeight: 200 },
-  ];
-
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
 
@@ -54,27 +52,52 @@ const WorkoutList = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#FFDEE9', '#B5FFFC']} style={styles.gradientContainer}>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <Text style={styles.motd}>{message}</Text>
       )}
-      {workouts.map((workout) => (
-        <View key={workout.id} style={styles.workoutContainer}>
-          <Text style={styles.workoutName}>{workout.name}</Text>
-          <Image
-            source={{ uri: `https://picsum.photos/${workout.imageWidth}/${workout.imageHeight}?random=${workout.id}` }}
-            style={styles.workoutImage}
-          />
-        </View>
-      ))}
-    </View>
+      <ScrollView horizontal pagingEnabled style={styles.scrollView}>
+        {workouts.map((workout) => (
+          <View key={workout.id} style={styles.workoutContainer}>
+            <Text style={styles.workoutName}>{workout.name}</Text>
+            <Image
+              source={{ uri: `https://picsum.photos/${workout.imageWidth}/${workout.imageHeight}?random=${workout.id}` }}
+              style={styles.workoutImage}
+            />
+          </View>
+        ))}
+      </ScrollView>
+    </LinearGradient>
+  );
+};
+
+const App = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Fitness Workouts</Text>
+      <ScrollView>
+        <WorkoutList />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    paddingTop: 20,
+    backgroundColor: '#f0f0f0',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  gradientContainer: {
+    flex: 1,
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
@@ -84,8 +107,11 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     textAlign: 'center',
   },
+  scrollView: {
+    flexDirection: 'row',
+  },
   workoutContainer: {
-    marginBottom: 20,
+    marginRight: 20,
     backgroundColor: '#ffffff',
     padding: 20,
     borderRadius: 10,
@@ -94,6 +120,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
+    width: Dimensions.get('window').width - 60,
   },
   workoutName: {
     fontSize: 20,
@@ -107,27 +134,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function App() {
-  return (
-    <SafeAreaView style={stylesApp.container}>
-      <Text style={stylesApp.title}>Fitness Workouts</Text>
-      <ScrollView>
-        <WorkoutList />
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const stylesApp = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-    backgroundColor: '#f0f0f0',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-});
+export default App;
